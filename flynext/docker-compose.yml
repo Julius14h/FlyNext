@@ -1,0 +1,67 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15 # Or your preferred database image
+    container_name: my_app_db
+    restart: always
+    environment:
+      # Source these from .env file or environment
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      
+    # volumes:
+      # - db_data:/var/lib/postgresql/data # Persist data
+    
+    ports:
+      - "5432:5432" # Optional: Only if needed for external access
+    # --- Essential: Healthcheck for the database ---
+    healthcheck:
+      # Adjust test based on your DB type (pg_isready for Postgres)
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # --- End Healthcheck ---
+
+  # --- Added Migration Service ---
+  migrate:
+    # Use the same build context as the 'app' so it has access to
+    # Prisma CLI, schema, and the 'migrations' folder.
+    build: .
+    container_name: my_app_migrator
+    # Load environment variables (needs DATABASE_URL)
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+
+    # --- Wait for the database to be healthy before running ---
+    depends_on:
+      db:
+        condition: service_healthy
+    # --- The command to execute for migrations ---
+    # Replace with your actual migration command
+    command: ["npx", "prisma", "migrate", "deploy"]
+    # No restart needed, it's a one-off task
+    # restart: no (default)
+  # --- End Migration Service ---
+
+  app: # Your main application service
+    build: .
+    container_name: my_app_main
+    restart: always
+    ports:
+      - "3000:3000" # Adjust port as needed
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+    # --- Modified: Wait for migrations to complete ---
+    depends_on:
+      migrate:
+        # Waits for the 'migrate' container to run its command and exit successfully (code 0)
+        condition: service_completed_successfully
+    # The default command from the Dockerfile (e.g., CMD ["npm", "run", "start"])
+    # will run after the dependency is met.
+
+volumes:
+  db_data: # Define the named volume used by the 'db' service
