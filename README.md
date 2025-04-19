@@ -1,93 +1,150 @@
-# PP2
+FlyNext: Your Most Reliable Travel Companion
+============================================
 
+![flynext homepage](flynext-home.png)
 
+FlyNext is a comprehensive travel search platform developed for the CSC309 Programming on the Web course at the University of Toronto Mississauga, Winter 2025. It streamlines booking flights and hotels through a responsive, single-page web application with an intuitive interface. FlyNext integrates real-time flight data from the Advanced Flights System (AFS) and manages hotel and booking data locally, offering features like advanced search filters, secure JWT authentication, and itinerary management. The application is deployed to the internet and optimized for production use.
 
-## Getting started
+This repository contains the complete implementation of FlyNext, including the Next.js backend, React frontend, and PostgreSQL database.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Project Overview
+----------------
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+FlyNext enables users to:
 
-## Add your files
+-   Search and book flights (one-way or round-trip) and hotels with advanced filtering (price, star rating, amenities, etc.).
+-   Manage hotel listings and room types as hotel owners.
+-   Handle bookings, cancellations, and notifications.
+-   Enjoy a responsive, intuitive interface with dark/light mode and cross-device compatibility.
+-   Access a pre-populated database with at least 50 hotels for a realistic experience.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+The application is built with modern web technologies and deployed at [https://flynext-raj.vercel.app](https://flynext-raj.vercel.app/).
+
+### Technologies Used
+
+-   **Backend**: Next.js, Prisma, REST, JWT for authentication, TypeScript
+-   **Frontend**: React, TailwindCSS, TypeScript
+-   **Database**: PostgreSQL
+-   **External Integration**: Advanced Flights System (AFS) APIs
+-   **Other Tools**: Postman, Swagger, Node.js 20+
+
+Setup Instructions (Local Development)
+--------------------------------------
+
+### Prerequisites
+
+-   Node.js 20+
+-   PostgreSQL (installed and running locally)
+-   Git
+
+### Installation and Running
+
+1.  **Clone the Repository**:
+
+    ```
+    git clone <your-gitlab-repo-url>
+    cd flynext
+
+    ```
+
+2.  **Install Dependencies**:
+
+    ```
+    npm install
+
+    ```
+
+3.  **Set Up the Database**:
+
+    -   Run Prisma migrations to set up the database schema:
+
+        ```
+        npx prisma migrate dev
+
+        ```
+
+    -   Populate the database with pre-populated hotel data (at least 50 hotels) by running the data import script (if provided) or manually seeding via Prisma.
+
+4.  **Start the Application**:
+
+    -   Run the application in development mode:
+
+        ```
+        npm run dev
+
+        ```
+
+    -   The application will be accessible at `http://localhost:3000`.
+
+5.  **Test APIs**:
+
+    -   Import `postman_collection.json` into Postman to test the REST APIs.
+    -   Import `collection.openapi` into Swagger Editor (<https://editor.swagger.io/>) for API documentation.
+    -   Refer to `docs.pdf` for the database model design and ER diagram.
+6.  **Access the Deployed Application**:
+
+    -   The application is hosted at [https://flynext-raj.vercel.app](https://flynext-raj.vercel.app/).
+
+Project Structure
+-----------------
 
 ```
-cd existing_repo
-git remote add origin https://mcsscm.utm.utoronto.ca/csc309_20251/group_208/PP2.git
-git branch -M main
-git push -uf origin main
+flynext/
+├── app/                    # Next.js API routes and pages
+├── components/             # React components
+├── prisma/                 # Prisma schema and migrations
+├── public/                 # Static assets
+├── scripts/                # Shell scripts (e.g., data import scripts)
+├── postman_collection.json # Postman API collection
+├── collection.openapi      # Swagger API documentation
+├── docs.pdf                # Database model documentation
+├── url.txt                 # Deployed application URL
+├── .env                    # Environment variables
+├── package.json            # Node.js dependencies
+└── README.md               # This file
+
 ```
 
-## Integrate with your tools
+API Documentation
+-----------------
 
-- [ ] [Set up project integrations](https://mcsscm.utm.utoronto.ca/csc309_20251/group_208/PP2/-/settings/integrations)
+The REST API endpoints are documented in `postman_collection.json` and `collection.openapi`. These cover:
 
-## Collaborate with your team
+-   User authentication (sign-up, login, logout, profile editing).
+-   Flight search and booking (via AFS, including cancellation).
+-   Hotel management (add/edit hotels, room types, availability).
+-   Booking management (create, view, cancel).
+-   Notifications (new bookings, cancellations).
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+The frontend interacts with these APIs to provide a seamless user experience.
 
-## Test and Deploy
+Database Models
+---------------
 
-Use the built-in continuous integration in GitLab.
+Refer to `docs.pdf` for a detailed explanation of the database models, including:
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+-   **User**: Stores user information (first name, last name, email, phone, profile picture).
+-   **Hotel**: Stores hotel details (name, logo, address, location, star rating, images).
+-   **RoomType**: Stores room types for each hotel (name, amenities, price, images).
+-   **Booking**: Stores itinerary details (flights and/or hotel reservations).
+-   **Notification**: Stores user and hotel owner notifications.
+-   **City/Airport**: Stores AFS-fetched data for search autocomplete.
 
-***
+The schema is implemented in PostgreSQL, with migrations managed by Prisma.
 
-# Editing this README
+Contributions
+-------------
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+-   **Aaron Li**: Architected and implemented robust API endpoints for hotel management, ensuring seamless hotel creation, room type management, and availability updates. Spearheaded containerization efforts with Docker to enhance portability and scalability. Strengthened application security by integrating JWT authentication and protecting sensitive API interactions.
 
-## Suggestions for a good README
+-   **Julius Henriques**: Designed and developed API endpoints for user account management and notifications, delivering a smooth authentication flow and real-time notification system. Crafted an engaging and responsive frontend with React and TailwindCSS, seamlessly integrating it with the backend to provide a cohesive user experience.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+-   **Raymond Nguyen**: Engineered API endpoints for flight search, booking, and hotel management, enabling efficient integration with the Advanced Flights System (AFS). Led the successful migration of the entire codebase to TypeScript, achieving 100% type safety to enhance code reliability and maintainability.
 
-## Name
-Choose a self-explaining name for your project.
+Deployment
+----------
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+The application is deployed at [https://flynext-raj.vercel.app](https://flynext-raj.vercel.app/) using Vercel. For local testing, run the application using `npm run dev` as described above.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+*This project was developed for CSC309: Programming on the Web, University of Toronto Mississauga, Winter 2025.*
