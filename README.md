@@ -135,7 +135,9 @@ The schema is implemented in PostgreSQL, with migrations managed by Prisma.
 Contributions
 -------------
 
--   **Aaron Li**: Architected and implemented robust API endpoints for hotel management, ensuring seamless hotel creation, room type management, and availability updates. Spearheaded containerization efforts with Docker to enhance portability and scalability. Strengthened application security by integrating JWT authentication and protecting sensitive API interactions.
+-   **Aaron Li**: Architected and implemented robust API endpoints for hotel management, ensuring seamless hotel creation, room type management, and availability updates. Spearheaded containerization efforts with Docker to enhance portability and scalability. Configured and deployed HTTPS to secure web traffic and ensure encrypted communication."
+
+
 
 -   **Julius Henriques**: Designed and developed API endpoints for user account management and notifications, delivering a smooth authentication flow and real-time notification system. Crafted an engaging and responsive frontend with React and TailwindCSS, seamlessly integrating it with the backend to provide a cohesive user experience.
 
